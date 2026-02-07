@@ -1,0 +1,247 @@
+## Arika Storage
+
+`@arikajs/storage` is the filesystem abstraction layer for the ArikaJS framework.
+
+It provides a clean, unified API to work with local and cloud-based storage systems using interchangeable drivers, inspired by Laravel's Storage but designed for Node.js and TypeScript.
+
+This package allows ArikaJS applications to interact with files without caring where or how they are stored.
+
+---
+
+## ✨ Features
+
+- **Multiple storage disks**: Configure different storage locations
+- **Driver-based filesystem architecture**: Pluggable storage backends
+- **Local filesystem driver**: Built-in support for local file storage (v1)
+- **Unified file API**: `put`, `get`, `delete`, `exists`, `url`
+- **Buffer, string, and stream support**: Flexible content handling
+- **Configuration-based disk resolution**: Easy setup via config files
+- **TypeScript-first**: Full type safety with JavaScript compatibility
+- **Designed for cloud drivers**: Ready for S3, GCS, Azure (planned)
+
+---
+
+## 📦 Installation
+
+```bash
+npm install @arikajs/storage
+# or
+yarn add @arikajs/storage
+# or
+pnpm add @arikajs/storage
+```
+
+---
+
+## 🚀 Quick Start
+
+### Basic File Operations
+
+```ts
+import { Storage } from '@arikajs/storage';
+
+// Write a file
+await Storage.put('files/example.txt', 'Hello Arika');
+
+// Read a file
+const content = await Storage.get('files/example.txt');
+
+// Delete a file
+await Storage.delete('files/example.txt');
+```
+
+---
+
+## 💽 Working with Disks
+
+Arika Storage supports multiple disks, each backed by a driver.
+
+```ts
+// Use a specific disk
+await Storage.disk('local').put('notes.txt', 'Hello');
+
+// Check if file exists on a disk
+const exists = await Storage.disk('public').exists('image.png');
+```
+
+---
+
+## ⚙️ Configuration
+
+Storage disks are defined in your application configuration:
+
+```ts
+export default {
+  default: 'local',
+
+  disks: {
+    local: {
+      driver: 'local',
+      root: './storage/app'
+    },
+
+    public: {
+      driver: 'local',
+      root: './storage/public',
+      url: '/storage'
+    }
+  }
+};
+```
+
+---
+
+## 📁 Supported Drivers (v1)
+
+| Driver | Status |
+| :--- | :--- |
+| Local filesystem | ✅ Supported |
+| Amazon S3 | ⏳ Planned |
+| Google Cloud Storage | ⏳ Planned |
+| Azure Blob Storage | ⏳ Planned |
+
+---
+
+## 📚 API Reference
+
+### `Storage.put(path, contents)`
+
+Write contents to a file.
+
+```ts
+await Storage.put('file.txt', 'content');
+```
+
+### `Storage.get(path)`
+
+Read file contents.
+
+```ts
+const content = await Storage.get('file.txt');
+```
+
+**Throws** `FileNotFoundException` if the file does not exist.
+
+### `Storage.exists(path)`
+
+Check if a file exists.
+
+```ts
+const exists = await Storage.exists('file.txt');
+```
+
+### `Storage.delete(path)`
+
+Delete a file.
+
+```ts
+await Storage.delete('file.txt');
+```
+
+### `Storage.url(path)`
+
+Get the public URL for a file.
+
+```ts
+const url = Storage.url('image.png');
+```
+
+Returns a public URL if supported by the disk.
+
+---
+
+## 🧠 Architecture
+
+```
+storage/
+├── src/
+│   ├── StorageManager.ts     ← Resolves disks and drivers
+│   ├── Disk.ts               ← Disk wrapper
+│   ├── Drivers/
+│   │   └── LocalDriver.ts    ← Local filesystem implementation
+│   ├── Contracts/
+│   │   └── Filesystem.ts     ← Driver interface
+│   ├── Exceptions/
+│   │   └── FileNotFoundException.ts
+│   └── index.ts
+├── tests/
+│   └── Storage.test.ts
+├── package.json
+├── tsconfig.json
+├── README.md
+└── LICENSE
+```
+
+---
+
+## 🔌 Extending Storage (Custom Drivers)
+
+You can create your own storage driver:
+
+```ts
+import { Filesystem } from '@arikajs/storage';
+
+class CustomDriver implements Filesystem {
+  async put(path: string, contents: string | Buffer): Promise<void> {
+    // Implementation
+  }
+
+  async get(path: string): Promise<Buffer> {
+    // Implementation
+  }
+
+  async delete(path: string): Promise<void> {
+    // Implementation
+  }
+
+  async exists(path: string): Promise<boolean> {
+    // Implementation
+  }
+
+  url(path: string): string {
+    // Implementation
+  }
+}
+```
+
+Register it inside `StorageManager`.
+
+---
+
+## 🔗 Integration with ArikaJS
+
+`@arikajs/storage` integrates seamlessly with:
+
+- **`@arikajs/auth`** → User uploads
+- **`@arikajs/mail`** → Attachments
+- **`@arikajs/logging`** → File logs
+- **`@arikajs/queue`** → Temporary files
+- **`@arikajs/view`** → Asset handling
+
+---
+
+## 🧪 Testing
+
+The storage layer is fully testable by mocking drivers or using temporary disks.
+
+---
+
+## 🛣 Roadmap
+
+- [ ] S3 driver
+- [ ] Streaming API
+- [ ] Temporary signed URLs
+- [ ] Disk-level middleware
+- [ ] File metadata support
+
+---
+
+## 📄 License
+
+`@arikajs/storage` is open-source software licensed under the **MIT License**.
+
+---
+
+## 🧭 Philosophy
+
+> "Your application should care about files, not filesystems."
