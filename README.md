@@ -96,7 +96,7 @@ export default {
 | Driver | Status |
 | :--- | :--- |
 | Local filesystem | ✅ Supported |
-| Amazon S3 | ⏳ Planned |
+| Amazon S3 | ✅ Supported |
 | Google Cloud Storage | ⏳ Planned |
 | Azure Blob Storage | ⏳ Planned |
 
