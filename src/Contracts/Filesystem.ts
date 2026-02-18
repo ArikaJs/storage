@@ -1,3 +1,5 @@
+import { Readable, Writable } from 'stream';
+
 export interface Filesystem {
     /**
      * Write contents to a file.
@@ -5,9 +7,19 @@ export interface Filesystem {
     put(path: string, contents: string | Buffer): Promise<void>;
 
     /**
+     * Write a stream to a file.
+     */
+    putStream(path: string, stream: Readable): Promise<void>;
+
+    /**
      * Read file contents.
      */
     get(path: string): Promise<Buffer>;
+
+    /**
+     * Read file as a stream.
+     */
+    readStream(path: string): Readable;
 
     /**
      * Check if a file exists.
@@ -23,4 +35,24 @@ export interface Filesystem {
      * Get the URL for a file.
      */
     url(path: string): string;
+
+    /**
+     * Get a temporary URL for a file.
+     */
+    temporaryUrl(path: string, expiresAt: Date): Promise<string>;
+
+    /**
+     * Get the file size in bytes.
+     */
+    size(path: string): Promise<number>;
+
+    /**
+     * Get the last modified time of the file.
+     */
+    lastModified(path: string): Promise<number>;
+
+    /**
+     * Get the mime type of the file.
+     */
+    mimeType(path: string): Promise<string>;
 }

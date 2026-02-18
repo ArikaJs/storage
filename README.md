@@ -228,11 +228,11 @@ The storage layer is fully testable by mocking drivers or using temporary disks.
 
 ## 🛣 Roadmap
 
-- [ ] S3 driver
-- [ ] Streaming API
-- [ ] Temporary signed URLs
-- [ ] Disk-level middleware
-- [ ] File metadata support
+- [x] S3 driver
+- [x] Streaming API
+- [x] Temporary signed URLs
+- [x] Disk-level middleware
+- [x] File metadata support
 
 ---
 

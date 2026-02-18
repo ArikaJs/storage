@@ -63,8 +63,16 @@ export class StorageManager {
         return await this.disk().put(path, contents);
     }
 
+    public async putStream(path: string, stream: any): Promise<void> {
+        return await this.disk().putStream(path, stream);
+    }
+
     public async get(path: string): Promise<Buffer> {
         return await this.disk().get(path);
+    }
+
+    public readStream(path: string): any {
+        return this.disk().readStream(path);
     }
 
     public async exists(path: string): Promise<boolean> {
@@ -77,5 +85,21 @@ export class StorageManager {
 
     public url(path: string): string {
         return this.disk().url(path);
+    }
+
+    public async temporaryUrl(path: string, expiresAt: Date): Promise<string> {
+        return await this.disk().temporaryUrl(path, expiresAt);
+    }
+
+    public async size(path: string): Promise<number> {
+        return await this.disk().size(path);
+    }
+
+    public async lastModified(path: string): Promise<number> {
+        return await this.disk().lastModified(path);
+    }
+
+    public async mimeType(path: string): Promise<string> {
+        return await this.disk().mimeType(path);
     }
 }
