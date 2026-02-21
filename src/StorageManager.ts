@@ -2,6 +2,8 @@ import { Disk } from './Disk';
 import { Filesystem } from './Contracts/Filesystem';
 import { LocalDriver } from './Drivers/LocalDriver';
 import { S3Driver } from './Drivers/S3Driver';
+import { GCSDriver } from './Drivers/GCSDriver';
+import { AzureDriver } from './Drivers/AzureDriver';
 
 export class StorageManager {
     private disks: Map<string, Disk> = new Map();
@@ -64,6 +66,10 @@ export class StorageManager {
                 return new LocalDriver(config);
             case 's3':
                 return new S3Driver(config);
+            case 'gcs':
+                return new GCSDriver(config);
+            case 'azure':
+                return new AzureDriver(config);
             default:
                 throw new Error(`Driver [${config.driver}] is not supported.`);
         }

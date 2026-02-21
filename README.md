@@ -100,8 +100,8 @@ export default {
 | :--- | :--- |
 | Local filesystem | ✅ Supported |
 | Amazon S3 | ✅ Supported |
-| Google Cloud Storage | ⏳ Planned |
-| Azure Blob Storage | ⏳ Planned |
+| Google Cloud Storage | ✅ Supported |
+| Azure Blob Storage | ✅ Supported |
 
 ---
 
@@ -284,6 +284,8 @@ The storage layer is fully testable by mocking drivers or using temporary disks.
 ## 🛣 Roadmap
 
 - [x] S3 driver
+- [x] GCS driver
+- [x] Azure Blob driver
 - [x] Streaming API
 - [x] Temporary signed URLs
 - [x] Disk-level middleware

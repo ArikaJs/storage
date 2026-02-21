@@ -44,9 +44,11 @@
     },
     "author": "Prakash Tank",
     "dependencies": {
+        "@arikajs/middleware": "file:../middleware",
         "@aws-sdk/client-s3": "^3.986.0",
         "@aws-sdk/s3-request-presigner": "^3.992.0",
-        "@arikajs/middleware": "file:../middleware",
+        "@azure/storage-blob": "^12.31.0",
+        "@google-cloud/storage": "^7.19.0",
         "mime-types": "^3.0.2"
     }
 }
