@@ -5,10 +5,19 @@ import { S3Driver } from './Drivers/S3Driver';
 
 export class StorageManager {
     private disks: Map<string, Disk> = new Map();
+    private customCreators: Map<string, (config: any) => Filesystem> = new Map();
     private config: any;
 
     constructor(config: any) {
         this.config = config;
+    }
+
+    /**
+     * Register a custom driver creator.
+     */
+    public extend(driver: string, callback: (config: any) => Filesystem): this {
+        this.customCreators.set(driver, callback);
+        return this;
     }
 
     /**
@@ -46,6 +55,10 @@ export class StorageManager {
      * Create a driver instance based on configuration.
      */
     private createDriver(config: any): Filesystem {
+        if (this.customCreators.has(config.driver)) {
+            return this.customCreators.get(config.driver)!(config);
+        }
+
         switch (config.driver) {
             case 'local':
                 return new LocalDriver(config);
@@ -101,5 +114,21 @@ export class StorageManager {
 
     public async mimeType(path: string): Promise<string> {
         return await this.disk().mimeType(path);
+    }
+
+    public async copy(path: string, newPath: string): Promise<void> {
+        return await this.disk().copy(path, newPath);
+    }
+
+    public async move(path: string, newPath: string): Promise<void> {
+        return await this.disk().move(path, newPath);
+    }
+
+    public async append(path: string, contents: string | Buffer): Promise<void> {
+        return await this.disk().append(path, contents);
+    }
+
+    public async prepend(path: string, contents: string | Buffer): Promise<void> {
+        return await this.disk().prepend(path, contents);
     }
 }

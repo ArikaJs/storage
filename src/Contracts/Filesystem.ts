@@ -55,4 +55,24 @@ export interface Filesystem {
      * Get the mime type of the file.
      */
     mimeType(path: string): Promise<string>;
+
+    /**
+     * Copy a file to a new location.
+     */
+    copy?(path: string, newPath: string): Promise<void>;
+
+    /**
+     * Move a file to a new location.
+     */
+    move?(path: string, newPath: string): Promise<void>;
+
+    /**
+     * Append to a file.
+     */
+    append?(path: string, contents: string | Buffer): Promise<void>;
+
+    /**
+     * Prepend to a file.
+     */
+    prepend?(path: string, contents: string | Buffer): Promise<void>;
 }

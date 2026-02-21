@@ -12,12 +12,15 @@ This package allows ArikaJS applications to interact with files without caring w
 
 - **Multiple storage disks**: Configure different storage locations
 - **Driver-based filesystem architecture**: Pluggable storage backends
+- **Storage Extensibility**: Register custom drivers via `extend()`
+- **Middleware pipelines**: Intercept operations via `disk().middleware()`
 - **Local filesystem driver**: Built-in support for local file storage (v1)
-- **Unified file API**: `put`, `get`, `delete`, `exists`, `url`
+- **Unified file API**: `put`, `get`, `delete`, `exists`, `url`, `copy`, `move`
+- **File mutation API**: `append`, `prepend`
 - **Buffer, string, and stream support**: Flexible content handling
 - **Configuration-based disk resolution**: Easy setup via config files
 - **TypeScript-first**: Full type safety with JavaScript compatibility
-- **Designed for cloud drivers**: Ready for S3, GCS, Azure (planned)
+- **Designed for cloud drivers**: Ready for S3, GCS, Azure (S3 shipped)
 
 ---
 
@@ -138,6 +141,38 @@ Delete a file.
 await Storage.delete('file.txt');
 ```
 
+### `Storage.copy(path, newPath)`
+
+Copy a file to a new location.
+
+```ts
+await Storage.copy('file.txt', 'backup.txt');
+```
+
+### `Storage.move(path, newPath)`
+
+Move a file to a new location.
+
+```ts
+await Storage.move('file.txt', 'archive.txt');
+```
+
+### `Storage.append(path, contents)`
+
+Append contents to a file.
+
+```ts
+await Storage.append('log.txt', 'New log entry');
+```
+
+### `Storage.prepend(path, contents)`
+
+Prepend contents to a file.
+
+```ts
+await Storage.prepend('log.txt', 'First entry');
+```
+
 ### `Storage.url(path)`
 
 Get the public URL for a file.
@@ -204,7 +239,27 @@ class CustomDriver implements Filesystem {
 }
 ```
 
-Register it inside `StorageManager`.
+Register it inside `StorageManager` using the `extend()` method:
+```ts
+storage.extend('custom', (config) => new CustomDriver(config));
+```
+
+---
+
+## 🚦 Storage Middleware
+
+You can attach disk-level middleware to intercept any storage operations (e.g., logging every write, encrypting payloads on `.put()`, etc.).
+
+```ts
+storage.disk('local').middleware(async (data, next) => {
+    if (data.operation === 'put') {
+        console.log(`Writing file: ${data.path}`);
+        // Optionally modify payload before saving!
+        // data.contents = encrypt(data.contents);
+    }
+    return await next(data);
+});
+```
 
 ---
 

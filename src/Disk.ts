@@ -130,4 +130,79 @@ export class Disk {
             return await this.driver.mimeType(data.path);
         });
     }
+
+    /**
+     * Copy a file to a new location.
+     */
+    public async copy(path: string, newPath: string): Promise<void> {
+        return await this.runPipeline('copy', { path, newPath }, async (data) => {
+            if (typeof this.driver.copy === 'function') {
+                return await this.driver.copy(data.path, data.newPath);
+            }
+            // Fallback
+            const content = await this.driver.get(data.path);
+            await this.driver.put(data.newPath, content);
+        });
+    }
+
+    /**
+     * Move a file to a new location.
+     */
+    public async move(path: string, newPath: string): Promise<void> {
+        return await this.runPipeline('move', { path, newPath }, async (data) => {
+            if (typeof this.driver.move === 'function') {
+                return await this.driver.move(data.path, data.newPath);
+            }
+            // Fallback
+            const content = await this.driver.get(data.path);
+            await this.driver.put(data.newPath, content);
+            await this.driver.delete(data.path);
+        });
+    }
+
+    /**
+     * Append to a file.
+     */
+    public async append(path: string, contents: string | Buffer): Promise<void> {
+        return await this.runPipeline('append', { path, contents }, async (data) => {
+            if (typeof this.driver.append === 'function') {
+                return await this.driver.append(data.path, data.contents);
+            }
+            // Fallback
+            let existing: Buffer | string = '';
+            try {
+                existing = await this.driver.get(data.path);
+            } catch (e) { } // Ignore if it doesn't exist
+
+            const separator = existing.length > 0 ? '\n' : '';
+            const newContent = Buffer.isBuffer(existing)
+                ? Buffer.concat([existing, Buffer.from(separator), Buffer.isBuffer(data.contents) ? data.contents : Buffer.from(data.contents)])
+                : existing + separator + data.contents;
+
+            return await this.driver.put(data.path, newContent);
+        });
+    }
+
+    /**
+     * Prepend to a file.
+     */
+    public async prepend(path: string, contents: string | Buffer): Promise<void> {
+        return await this.runPipeline('prepend', { path, contents }, async (data) => {
+            if (typeof this.driver.prepend === 'function') {
+                return await this.driver.prepend(data.path, data.contents);
+            }
+            // Fallback
+            let existing: Buffer | string = '';
+            try {
+                existing = await this.driver.get(data.path);
+            } catch (e) { } // Ignore if it doesn't exist
+
+            const separator = existing.length > 0 ? '\n' : '';
+            const newContent = Buffer.isBuffer(existing)
+                ? Buffer.concat([Buffer.isBuffer(data.contents) ? data.contents : Buffer.from(data.contents), Buffer.from(separator), existing])
+                : data.contents + separator + existing;
+
+            return await this.driver.put(data.path, newContent);
+        });
+    }
 }
