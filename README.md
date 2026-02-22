@@ -2,7 +2,7 @@
 
 `@arikajs/storage` is the filesystem abstraction layer for the ArikaJS framework.
 
-It provides a clean, unified API to work with local and cloud-based storage systems using interchangeable drivers, inspired by Laravel's Storage but designed for Node.js and TypeScript.
+It provides a clean, unified API to work with local and cloud-based storage systems using interchangeable drivers, designed for maximum developer experience but designed for Node.js and TypeScript.
 
 This package allows ArikaJS applications to interact with files without caring where or how they are stored.
 
@@ -292,6 +292,29 @@ The storage layer is fully testable by mocking drivers or using temporary disks.
 - [x] File metadata support
 
 ---
+
+## 🏗 Architecture
+
+```text
+storage/
+├── src/
+│   ├── Contracts
+│   │   └── Filesystem.ts
+│   ├── Drivers
+│   │   ├── AzureDriver.ts
+│   │   ├── GCSDriver.ts
+│   │   ├── LocalDriver.ts
+│   │   └── S3Driver.ts
+│   ├── Exceptions
+│   │   └── FileNotFoundException.ts
+│   ├── Disk.ts
+│   ├── index.ts
+│   └── StorageManager.ts
+├── tests/
+├── package.json
+├── tsconfig.json
+└── README.md
+```
 
 ## 📄 License
 
