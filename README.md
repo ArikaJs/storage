@@ -185,26 +185,27 @@ Returns a public URL if supported by the disk.
 
 ---
 
-## 🧠 Architecture
+## 🏗 Architecture
 
-```
+```text
 storage/
 ├── src/
-│   ├── StorageManager.ts     ← Resolves disks and drivers
-│   ├── Disk.ts               ← Disk wrapper
-│   ├── Drivers/
-│   │   └── LocalDriver.ts    ← Local filesystem implementation
-│   ├── Contracts/
-│   │   └── Filesystem.ts     ← Driver interface
-│   ├── Exceptions/
+│   ├── Contracts
+│   │   └── Filesystem.ts
+│   ├── Drivers
+│   │   ├── AzureDriver.ts
+│   │   ├── GCSDriver.ts
+│   │   ├── LocalDriver.ts
+│   │   └── S3Driver.ts
+│   ├── Exceptions
 │   │   └── FileNotFoundException.ts
-│   └── index.ts
+│   ├── Disk.ts
+│   ├── index.ts
+│   └── StorageManager.ts
 ├── tests/
-│   └── Storage.test.ts
 ├── package.json
 ├── tsconfig.json
-├── README.md
-└── LICENSE
+└── README.md
 ```
 
 ---
@@ -292,29 +293,6 @@ The storage layer is fully testable by mocking drivers or using temporary disks.
 - [x] File metadata support
 
 ---
-
-## 🏗 Architecture
-
-```text
-storage/
-├── src/
-│   ├── Contracts
-│   │   └── Filesystem.ts
-│   ├── Drivers
-│   │   ├── AzureDriver.ts
-│   │   ├── GCSDriver.ts
-│   │   ├── LocalDriver.ts
-│   │   └── S3Driver.ts
-│   ├── Exceptions
-│   │   └── FileNotFoundException.ts
-│   ├── Disk.ts
-│   ├── index.ts
-│   └── StorageManager.ts
-├── tests/
-├── package.json
-├── tsconfig.json
-└── README.md
-```
 
 ## 📄 License
 
